@@ -1,35 +1,4 @@
-<?php
-global $servername;
-include_once("db_connect.php");
 
-// Include database connection file
-$host = '127.0.0.1';
-$dbname = 'restaurant';
-$username = 'root';
-$password = '';
-
-try {
-    $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // Controleer of het zoekformulier is ingediend
-    if (isset($_POST['search'])) {
-        $search = $_POST['search'];
-        $stmt = $conn->prepare("SELECT id, titel, omschrijving, prijs FROM gerechten WHERE titel LIKE :search OR omschrijving LIKE :search");
-        $stmt->bindValue(':search', '%' . $search . '%');
-        $stmt->execute();
-
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } else {
-        // Standaardquery als er geen zoekterm is ingevoerd
-        $stmt = $conn->prepare("SELECT id, titel, omschrijving, prijs FROM gerechten");
-        $stmt->execute();
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-} catch(PDOException $e) {
-    echo "Verbinding mislukt: " . $e->getMessage();
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,4 +49,35 @@ try {
 </form>
 </body>
 </html>
+<?php
+global $servername;
+include_once("db_connect.php");
 
+// Include database connection file
+$host = '127.0.0.1';
+$dbname = 'restaurant';
+$username = 'root';
+$password = '';
+
+try {
+    $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Controleer of het zoekformulier is ingediend
+    if (isset($_POST['search'])) {
+        $search = $_POST['search'];
+        $stmt = $conn->prepare("SELECT id, titel, omschrijving, prijs FROM gerechten WHERE titel LIKE :search OR omschrijving LIKE :search");
+        $stmt->bindValue(':search', '%' . $search . '%');
+        $stmt->execute();
+
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        // Standaardquery als er geen zoekterm is ingevoerd
+        $stmt = $conn->prepare("SELECT id, titel, omschrijving, prijs FROM gerechten");
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+} catch(PDOException $e) {
+    echo "Verbinding mislukt: " . $e->getMessage();
+}
+?>
