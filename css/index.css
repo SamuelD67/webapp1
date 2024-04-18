@@ -1,198 +1,169 @@
-@media (max-width: 590px) {
-    body {
-    }
-    .login-container{
-        margin:0;
-        width: 250px;
-        overflow-x: hidden;
-    }
-    .hide-on-small {
-        display: none;
+body {
+    font-family: 'Arial', sans-serif;
+    background: #f9f9f9; /* Light background */
+    color: #333; /* Dark text for better readability */
+    margin: 0;
+    padding: 20px;
+}
+
+header {
+    background: #ff9800; /* Orange background */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.search-form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    width: 100%; /* Maak het zoekformulier responsief */
+}
+
+.search-form input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%; /* Maak de input velden responsief */
+}
+
+.search-form button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%; /* Maak de knoppen responsief */
+}
+
+.search-form button[type="submit"]:hover {
+    background-color: #e65c00;
+}
+
+.navbar {
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
+
+.navbar a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    background-color: #ddd;
+    color: black;
+    border-radius: 20px;
+}
+
+/* Responsive navbar */
+@media screen and (max-width: 600px) {
+    .navbar a {
+        float: none;
+        display: block;
     }
 }
 
-
-body, html {
-    height: 100%;
-    padding: 0;
+h1 {
     margin: 0;
 }
 
-body {
-    display: flex;
-    flex-direction: column;
-}
-.pizza-image-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    padding: 20px;
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.pizza-image-container img {
-    max-width: 400px;
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    background-color: #f39c12;
-    color: white;
-}
-
-#cart-info {
-    background-color: #2ecc71;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
-#cart-count {
-    font-weight: bold;
-}
-
-main {
-    padding: 20px;
-}
-
-.product {
-    background-color: white;
+th, td {
     border: 1px solid #ddd;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    padding: 10px;
+    text-align: left;
 }
 
-.product h2 {
-    color: #e74c3c;
-}
-
-.add-to-cart {
-    background-color: #27ae60;
+th {
+    background-color: #ff9800;
     color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
 }
 
-.add-to-cart:hover {
-    background-color: #219150;
-}
-
-#checkout-btn {
-    background-color: #e67e22;
+.add-to-cart-btn {
+    background-color: #4caf50; /* Green */
     color: white;
     border: none;
     padding: 10px 20px;
-    border-radius: 4px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
     cursor: pointer;
-    font-size: 18px;
+    border-radius: 5px;
 }
 
-#checkout-btn:hover {
-    background-color: #d35400;
+.add-to-cart-btn:hover {
+    background-color: #45a049; /* Darker green on hover */
 }
 
-footer {
-    background-color: #2c3e50;
+/* Responsive table */
+@media screen and (max-width: 600px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    tr {
+        margin: 0 0 1rem 0;
+    }
+
+    td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+    }
+
+    td:before {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+    }
+
+    td:nth-of-type(1):before { content: "Pizza"; }
+    td:nth-of-type(2):before { content: "Description"; }
+    td:nth-of-type(3):before { content: "Price"; }
+    td:nth-of-type(4):before { content: "Action"; }
+}
+
+header {
+    position: relative;
+    padding: 20px;
+    background-color: #ff9800; /* Orange background */
     color: white;
     text-align: center;
-    /* Index.php*/
 }
 
-/* Stijlen voor de navigatiebalk */
-.navbar {
-
-    justify-content: center;
-    background-color: #d35400;
-    padding: 10px;
-}
-
-
-.navbar ul {
+#cart-info {
+    position: fixed;
+    top: 20px;
+    right: 20px;
     display: flex;
     align-items: center;
-    list-style-type: none;
-    margin: 0;
-    justify-content: center;
-
-}
-
-.navbar li {
-    margin-right: 20px;
-}
-.navbar li a {
-    text-decoration: none;
     color: white;
-    font-weight: bold;
-}
-.search-bar {
-    display: flex;
-    justify-content: center;
-    margin-left: 20px;
-    margin-top: 10px;
 }
 
-.search-bar input[type="text"] {
-    padding: 5px;
-    border: none;
-    border-radius: 4px;
-}
-
-.order-info {
-    text-align: center;
-    padding: 50px 20px;
-    background-image: url('img/food.jpg');
-    background-size: contain; /* Zorgt ervoor dat de afbeelding binnen de box blijft */
-    background-position: center;
-    background-repeat: no-repeat; /* Zorgt ervoor dat de afbeelding niet herhaald wordt */
-    color: #fff; /* Zorgt ervoor dat de tekst wit is, voor betere leesbaarheid */
-}
-    .order-info h1 {
-        color: #000000;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        font-size: 3em;
-    }
-
-.info-box {
-    background-color: rgba(255, 255, 255, 0.8);
-    margin: 20px;
-    padding: 20px;
-    border-radius: 8px;
-    flex: 1;
-}
-
-    .info-box h3 {
-        color: #e74c3c;
-        text-align: center;
-        font-weight: normal;
-    }
-
-    footer.line-1 {
-        height: 5px;
-        background-color: #e74c3c;
-    }
-
-    footer.copy-right {
-        background-color: #2c3e50;
-        color: white;
-        text-align: center;
-        padding: 10px 0;
-    }
-
-    footer.copy-right h4 {
-        margin: 0;
-        font-weight: normal;
-    }
 /*login.php*/
 .login-container {
     max-width: 400px;
@@ -275,7 +246,6 @@ footer {
 
 
 h1, h2, h3, h4, h5, h6 {
-    color: #d35400;
 }
 
 p {
@@ -289,16 +259,100 @@ footer {
     padding: 20px 0;
     margin-top: 20px;
 }
-/* logout */
-.logout-button {
-    display: inline-block;
+/*admin.php*/
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f8f8;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #ff5722; /* Orange color */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+/* Section Styles */
+section {
+    margin: 20px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Styles */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input[type="text"], input[type="number"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+input[type="submit"] {
     padding: 10px 20px;
-    background-color: #f44336;
-    color: white; /* Witte tekst */
+    background-color: #ff5722; /* Orange color */
+    color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
-    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: #e64a19; /* Darker orange */
+}
+
+/* Pizza Themed Styles */
+h2, h3 {
+    color: #ff5722; /* Orange color */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    section {
+        padding: 10px;
+    }
+}
+/*index.php*/
+.pizza-card-box {
+    display: flex;
+
+    justify-content: space-evenly;
+}
+
+.pizza-card {
+    width: 300px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);
+    margin-bottom: 20px;
+    text-align: center;
+}
+@media (max-width: 768px) {
+    .pizza-card-box {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+/* General responsive improvements */
+@media (max-width: 768px) {
+    header, section, .add-box, .delete-box, .update-box, .login-container {
+        padding: 10px;
+    }
+
+    .search-form, .navbar a, .pizza-card {
+        margin: 10px 0; /* Add some space between elements on smaller screens */
+    }
 }

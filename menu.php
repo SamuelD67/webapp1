@@ -1,83 +1,91 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu</title>
+    <title>Pizza Menu</title>
     <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
-<div class="navbar-container">
-    <nav class="navbar">
-        <ul>
-            <li><a href="index.php">Home</a></li>
-            <li><a href="menu.php">Menu</a></li>
-            <li><a href="login.php">Login</a></li>
-        </ul>
-        <div class="search-bar">
-            <input type="text" placeholder="Search...">
-        </div>
-    </nav>
-
-</div>
 <header>
-    <h1>Menu</h1>
-    <button id="checkout-btn">Check out</button>
-    <div id="cart-info">
-        <span id="cart-count">0</span>
+    <div class="navbar">
+        <a href="index.php">Home</a>
+        <a href="menu.php">Menu</a>
+        <a href="login.php">login</a>
     </div>
+    <form action="menu.php" method="GET" class="search-form">
+        <input type="text" name="search" placeholder="Search for a dish...">
+        <button type="submit">Search</button>
+    </form>
+    <nav>
+        <div class="logo">
+            <h1>Pizza Menu</h1>
+        </div>
+        <div class="cart-info">
+            <span id="cart-count">0</span>
+        </div>
+
+    </nav>
 </header>
 <main>
-    <section id="products">
-        <?php foreach ($results as $gerecht): ?>
-            <div class="product">
-                <h2><?php echo htmlspecialchars($gerecht['titel']); ?></h2>
-                <p><?php echo htmlspecialchars($gerecht['omschrijving']); ?></p>
-                <p>Prijs: <?php echo htmlspecialchars($gerecht['prijs']); ?></p>
-                <button class="add-to-cart" data-id="<?php echo $gerecht['id']; ?>">Add</button>
-            </div>
-        <?php endforeach; ?>
-    </section>
+    <table>
+        <thead>
+        <tr>
+            <th>Pizza</th>
+            <th>Omschrijving</th>
+            <th>prijs</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('.add-to-cart-btn').click(function() {
+                    // Verhoog de waarde van het cart-count element met 1
+                    var currentCount = parseInt($('#cart-count').text());
+                    $('#cart-count').text(currentCount + 1);
+                });
+            });
+        </script>
+        <?php
+        $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+
+        $servername = "localhost";
+        $username = "root";
+        $password = "";
+        $dbname = "restaurant";
+
+        // Create a new database connection
+        $conn = new mysqli($servername, $username, $password, $dbname);
+
+        // Check if the connection was successful
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+
+        $sql = "SELECT id, titel, omschrijving, prijs FROM gerechten WHERE titel LIKE '%$searchTerm%'";
+        $results = mysqli_query($conn, $sql);
+
+        if (mysqli_num_rows($results) > 0) {
+            // Output data of each row
+            while($row = mysqli_fetch_assoc($results)) {
+                echo "<tr>";
+                echo "<td>" . $row['titel'] . "</td>";
+                echo "<td>" . $row['omschrijving'] . "</td>";
+                echo "<td>" . $row['prijs'] . "</td>";
+                echo "<td><button class='add-to-cart-btn' data-item-id='" . $row['id'] . "'>Add to Cart</button></td>";
+                echo "</tr>";
+            }
+        } else {
+            echo "<tr><td colspan='5'>No items found.</td></tr>";
+        }
+
+        // Close the database connection
+        $conn->close();
+        ?>
+        </tbody>
+    </table>
 </main>
-<footer class="line-1"></footer>
-<footer class="copy-right">
-    <h4>Copyright © 2024 | Saintiolo. All rights reserved.</h4>
-</footer>
-<script src="saint.js"></script>
-<form action="menu.php" method="post" onsubmit="event.preventDefault(); searchMenu();">
-</form>
 </body>
 </html>
-<?php
-global $servername;
-include_once("db_connect.php");
-
-// Include database connection file
-$host = '127.0.0.1';
-$dbname = 'restaurant';
-$username = 'root';
-$password = '';
-
-try {
-    $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // Controleer of het zoekformulier is ingediend
-    if (isset($_POST['search'])) {
-        $search = $_POST['search'];
-        $stmt = $conn->prepare("SELECT id, titel, omschrijving, prijs FROM gerechten WHERE titel LIKE :search OR omschrijving LIKE :search");
-        $stmt->bindValue(':search', '%' . $search . '%');
-        $stmt->execute();
-
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } else {
-        // Standaardquery als er geen zoekterm is ingevoerd
-        $stmt = $conn->prepare("SELECT id, titel, omschrijving, prijs FROM gerechten");
-        $stmt->execute();
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-} catch(PDOException $e) {
-    echo "Verbinding mislukt: " . $e->getMessage();
-}
-?>

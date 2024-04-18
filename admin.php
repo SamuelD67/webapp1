@@ -1,78 +1,169 @@
+<?php
+// Start the PHP session
+session_start();
+// Controleer of de gebruiker is ingelogd
+
+// Database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "restaurant";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Verbinding mislukt: " . $conn->connect_error);
+}
+
+// Display session messages
+if (isset($_SESSION['message'])) {
+    echo $_SESSION['message'];
+    unset($_SESSION['message']);
+}
+
+// Initialize $editMode and $currentDish
+$editMode = false;
+$currentDish = [];
+
+// Verwerking van het wijzigingsverzoek
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit'])) {
+    $id = $_POST['id'];
+
+    // Ophalen van de gegevens van het gerecht dat bewerkt moet worden
+    $sql = "SELECT id, titel, omschrijving, prijs FROM gerechten WHERE id = ?";
+
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param("i", $id);
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            $currentDish = $result->fetch_assoc();
+            $editMode = true;
+        } else {
+            echo "Er is een fout opgetreden: " . $stmt->error;
+        }
+        $stmt->close();
+    } else {
+        echo "Er is een fout opgetreden: " . $conn->error;
+    }
+}
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
+    $titel = $_POST['titel'];
+    $omschrijving = $_POST['beschrijving'];
+    $prijs = $_POST['prijs'];
+
+    $sql = "INSERT INTO gerechten (titel, omschrijving, prijs) VALUES (?, ?, ?)";
+
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param("ssd", $titel, $omschrijving, $prijs);
+        if ($stmt->execute()) {
+            $_SESSION['message'] = "Nieuw gerecht succesvol toegevoegd.";
+        } else {
+            echo "Er is een fout opgetreden: " . $stmt->error;
+        }
+        $stmt->close();
+    } else {
+        echo "Er is een fout opgetreden: " . $conn->error;
+    }
+}
+
+// Verwerking van het opslaan van wijzigingen
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update'])) {
+    $id = $_POST['id'];
+    $titel = $_POST['titel'];
+    $omschrijving = $_POST['beschrijving'];
+    $prijs = $_POST['prijs'];
+
+    $sql = "UPDATE gerechten SET titel = ?, omschrijving = ?, prijs = ? WHERE id = ?";
+
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param("ssdi", $titel, $omschrijving, $prijs, $id);
+        if ($stmt->execute()) {
+            $_SESSION['message'] = "Gerecht succesvol bijgewerkt.";
+        } else {
+            echo "Er is een fout opgetreden: " . $stmt->error;
+        }
+        $stmt->close();
+    } else {
+        echo "Er is een fout opgetreden: " . $conn->error;
+    }
+
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
+// Haal gerechten op uit de database om weer te geven
+$gerechten = [];
+$sql = "SELECT id, titel, omschrijving, prijs FROM gerechten";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $gerechten[] = $row;
+    }
+
+}
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete'])) {
+    $id = $_POST['id'];
+
+    $sql = "DELETE FROM gerechten WHERE id = ?";
+
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param("i", $id);
+        if ($stmt->execute()) {
+            $_SESSION['message'] = "Gerecht succesvol verwijderd.";
+        } else {
+            echo "Er is een fout opgetreden: " . $stmt->error;
+        }
+        $stmt->close();
+    } else {
+        echo "Er is een fout opgetreden: " . $conn->error;
+    }
+}
+$conn->close();
+?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saintiolo</title>
+    <title>Restaurant Management</title>
     <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
-<nav class="navbar">
-    <ul class="navbar-nav">
-        <li class="nav-item"><a href="index.php" class="nav-link">Home</a></li>
-        <li class="nav-item"><a href="menu.php" class="nav-link">menu</a></li>
-        <li class="nav-item"><a href="login.php" class="nav-link">login</a></li>
-    </ul>
-</nav>
+<header>
+</header>
+<section>
+    <h3>Voeg een nieuw gerecht toe</h3>
+    <form action="admin.php" method="post">
+        <input type="text" name="titel" placeholder="Naam van het gerecht" required>
+        <input type="text" name="beschrijving" placeholder="Beschrijving" required>
+        <input type="number" step="0.01" name="prijs" placeholder="Prijs" required>
+        <input type="submit" name="submit" value="Toevoegen">
+    </form>
+</section>
+<section>
+    <?php if ($editMode): ?>
+        <h3>Wijzig gerecht</h3>
+        <form action="admin.php" method="post">
+            <input type="hidden" name="id" value="<?php echo htmlspecialchars($currentDish['id']); ?>">
+            <input type="text" name="titel" placeholder="Naam van het gerecht" value="<?php echo htmlspecialchars($currentDish['titel']); ?>" required>
+            <input type="text" name="beschrijving" placeholder="Beschrijving" value="<?php echo htmlspecialchars($currentDish['omschrijving']); ?>" required>
+            <input type="number" step="0.50" name="prijs" placeholder="Prijs" value="<?php echo htmlspecialchars($currentDish['prijs']); ?>" required>
+            <input type="submit" name="update" value="Opslaan">
+        </form>
+    <?php endif; ?>
+    <h2>Beschikbare Gerechten</h2>
+    <?php foreach ($gerechten as $gerecht): ?>
+        <form action="admin.php" method="post">
+            <input type="hidden" name="id" value="<?php echo htmlspecialchars($gerecht['id']); ?>">
+            <p><?php echo htmlspecialchars($gerecht['titel']); ?> <br> <?php echo htmlspecialchars($gerecht['omschrijving']); ?><br>
+                - €<?php echo htmlspecialchars($gerecht['prijs']); ?></p>
+            <input type="submit" name="edit" value="Wijzigen">
+            <input type="submit" name="delete" value="Verwijder">
+        </form>
+    <?php endforeach; ?>
+</section>
 
-<form class="add-box" action="" method="post">
-    <label for="gerecht_naam">Naam van het gerecht:</label><br>
-    <input type="text" id="gerecht_naam" name="gerecht_naam"><br>
-    <label for="gerecht_beschrijving">Beschrijving:</label><br>
-    <textarea id="gerecht_beschrijving" name="gerecht_beschrijving"></textarea><br>
-    <label for="gerecht_prijs">Prijs:</label><br>
-    <input type="text" id="gerecht_prijs" name="gerecht_prijs"><br>
-    <input type="submit" value="Gerecht toevoegen">
-</form>
-<form class="delete-box" action="admin.php" method="post">
-    <label for="gerecht_titel">Titel van het gerecht:</label><br>
-    <input type="text" id="gerecht_titel" name="gerecht_titel"><br>
-    <input type="submit" value="Gerecht verwijderen">
-</form>
-<form class="update-box" action="admin.php" method="post">
-    <label for="gerecht_titel_update">Titel van het gerecht:</label><br>
-    <input type="text" id="gerecht_titel_update" name="gerecht_titel_update"><br>
-    <label for="gerecht_naam_update">Nieuwe naam van het gerecht:</label><br>
-    <input type="text" id="gerecht_naam_update" name="gerecht_naam_update"><br>
-    <label for="gerecht_beschrijving_update">Nieuwe beschrijving:</label><br>
-    <textarea id="gerecht_beschrijving_update" name="gerecht_beschrijving_update"></textarea><br>
-    <label for="gerecht_prijs_update">Nieuwe prijs:</label><br>
-    <input type="text" id="gerecht_prijs_update" name="gerecht_prijs_update"><br>
-    <input type="submit" value="Gerecht wijzigen">
-</form>
 </body>
 </html>
-<?php
-$host = '127.0.0.1';
-$dbname = 'restaurant';
-$username = 'root';
-$password = '';
-
-session_start();
-
-try {
-    $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // Check if the form is submitted
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        if (isset($_POST['username']) && isset($_POST['password'])) {
-            $username = $_POST['username'];
-            $password = $_POST['password'];
-
-            if ($username == "Saint.67" && $password == "QWEASD") {
-                $_SESSION['loggedin'] = true;
-                $_SESSION['username'] = $username;
-                header('Location: admin.php');
-                exit;
-            } else {
-                $error = "Incorrect username or password.";
-            }
-        }
-    }
-
-} catch (PDOException $e) {
-    echo "Fout bij het verbinden met de database: " . $e->getMessage();
-}
-?>

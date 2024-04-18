@@ -5,7 +5,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <link rel="stylesheet" href="css/index.css">.
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ab8888;
+            margin: 0;
+            padding: 0;
+        }
 
+        /* Stijl voor de navigatiebalk */
+        nav {
+            overflow: hidden;
+            background-color: #333; /* Voeg een achtergrondkleur toe */
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            float: left;
+        }
+
+        nav ul li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        nav ul li a:hover {
+            background-color: #111;
+            border-radius: 19px;
+        }
+
+        /* Lettertype en Grootte */
+        nav ul li a {
+            font-family: Arial, sans-serif;
+            font-size: 17px;
+        }
+
+        /* Stijl voor de inlogcontainer */
+        .login-container {
+            width: 300px;
+            background-color: grey;
+            margin: 100px auto;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex; /* Gebruik flexbox voor een betere layout */
+            flex-direction: column; /* Stel de richting in op kolom */
+            align-items: center; /* Centraal de items horizontaal */
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            width: 100%; /* Zorg ervoor dat de groep een volledige breedte heeft */
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%; /* Maak de input velden responsief */
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .form-group button {
+            width: 100%; /* Maak de knoppen responsief */
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .form-group button:hover {
+            background-color: #444;
+        }
+
+        /* Foutmelding */
+        .error {
+            color: red;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 600px) {
+            .login-container {
+                width: 90%;
+                margin: 50px auto;
+            }
+        }
+    </style>
 </head>
 <body>
 <nav class="navbar">
@@ -65,4 +170,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
+
 ?>
