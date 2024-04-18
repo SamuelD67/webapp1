@@ -50,41 +50,46 @@
             });
         </script>
         <?php
-        $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+        session_start(); //  sessie om sessiegegevens te onderhouden
 
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $dbname = "restaurant";
-
-        // Create a new database connection
-        $conn = new mysqli($servername, $username, $password, $dbname);
-
-        // Check if the connection was successful
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
+        // PDO-verbinding
+        try {
+            $servername = "localhost";
+            $username = "root";
+            $password = "";
+            $dbname = "restaurant";
+            $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch(PDOException $e) {
+            echo "Connection failed: " . $e->getMessage();
         }
 
-        $sql = "SELECT id, titel, omschrijving, prijs FROM gerechten WHERE titel LIKE '%$searchTerm%'";
-        $results = mysqli_query($conn, $sql);
+        // Valideren van de GET-parameter
+        $searchTerm = isset($_GET['search']) ? filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING) : '';
 
-        if (mysqli_num_rows($results) > 0) {
-            // Output data of each row
-            while($row = mysqli_fetch_assoc($results)) {
+        // PDO-statement voorbereiden
+        $stmt = $conn->prepare("SELECT id, titel, omschrijving, prijs FROM gerechten WHERE titel LIKE :searchTerm");
+        $stmt->bindValue(':searchTerm', '%' . $searchTerm . '%', PDO::PARAM_STR);
+        $stmt->execute();
+
+        // Resultaten ophalen
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Controleren of er resultaten zijn
+        if (count($results) > 0) {
+            foreach($results as $row) {
                 echo "<tr>";
-                echo "<td>" . $row['titel'] . "</td>";
-                echo "<td>" . $row['omschrijving'] . "</td>";
-                echo "<td>" . $row['prijs'] . "</td>";
-                echo "<td><button class='add-to-cart-btn' data-item-id='" . $row['id'] . "'>Add to Cart</button></td>";
+                echo "<td>" . htmlspecialchars($row['titel']) . "</td>";
+                echo "<td>" . htmlspecialchars($row['omschrijving']) . "</td>";
+                echo "<td>" . htmlspecialchars($row['prijs']) . "</td>";
+                echo "<td><button class='add-to-cart-btn' data-item-id='" . htmlspecialchars($row['id']) . "'>Add to Cart</button></td>";
                 echo "</tr>";
             }
         } else {
             echo "<tr><td colspan='5'>No items found.</td></tr>";
         }
-
-        // Close the database connection
-        $conn->close();
         ?>
+
         </tbody>
     </table>
 </main>

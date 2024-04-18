@@ -10,4 +10,6 @@ try {
 } catch(PDOException $e) {
     echo "Connection failed: " . $e->getMessage();
 }
+$adminUsername = 'Saint.67';
+$adminPassword = 'QWEASD';
 ?>

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,10 +14,10 @@
             padding: 0;
         }
 
-        /* Stijl voor de navigatiebalk */
+
         nav {
             overflow: hidden;
-            background-color: #333; /* Voeg een achtergrondkleur toe */
+            background-color: #333;
         }
 
         nav ul {
@@ -42,22 +43,22 @@
             border-radius: 19px;
         }
 
-        /* Lettertype en Grootte */
+
         nav ul li a {
             font-family: Arial, sans-serif;
             font-size: 17px;
         }
 
-        /* Stijl voor de inlogcontainer */
+
         .login-container {
             width: 300px;
             background-color: grey;
             margin: 100px auto;
             border-radius: 4px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: flex; /* Gebruik flexbox voor een betere layout */
-            flex-direction: column; /* Stel de richting in op kolom */
-            align-items: center; /* Centraal de items horizontaal */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .login-container h2 {
@@ -144,32 +145,37 @@
 </html>
 
 <?php
-// Verbindingsinformatie
-$host = '127.0.0.1';
-$dbname = 'restaurant';
-$dbUsername = 'root';
-$dbPassword = '';
+// Include the database connection file
+require_once 'db_connect.php';
 
+// Declare the global variables for the admin username and password
+global $adminUsername, $adminPassword;
+
+// Start the session
 session_start();
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if username and password are set
     if (isset($_POST['username']) && isset($_POST['password'])) {
+        // Assign the submitted username and password to variables
         $username = $_POST['username'];
         $password = $_POST['password'];
 
-
-        if ($username == "Saint.67" && $password == "QWEASD") {
+        // Check if the submitted username and password match the admin credentials
+        if ($username == $adminUsername && $password == $adminPassword) {
             // Set session variables and redirect to admin.php if the credentials are correct
             $_SESSION['loggedin'] = true;
             $_SESSION['username'] = $username;
             header('Location: admin.php');
             exit;
         } else {
+            // Display an error message if the credentials are incorrect
             $error = "Incorrect username or password.";
         }
     }
 }
+
+?>
 
 ?>
