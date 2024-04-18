@@ -115,9 +115,10 @@
 <body>
 <nav class="navbar">
     <ul class="navbar-nav">
-        <li class="nav-item"><a href="index.php" class="nav-link">Home</a></li>
-        <li class="nav-item"><a href="menu.php" class="nav-link">menu</a></li>
-        <li class="nav-item"><a href="login.php" class="nav-link">login</a></li>
+        <a href="index.php">Home</a>
+        <a href="menu.php">Menu</a>
+        <a href="login.php">login</a>
+        <a href="contact.php">contact</a>
     </ul>
 </nav>
 <div class="login-container">

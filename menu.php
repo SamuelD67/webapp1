@@ -12,6 +12,7 @@
         <a href="index.php">Home</a>
         <a href="menu.php">Menu</a>
         <a href="login.php">login</a>
+        <a href="contact.php">contact</a>
     </div>
     <form action="menu.php" method="GET" class="search-form">
         <input type="text" name="search" placeholder="Search for a dish...">
